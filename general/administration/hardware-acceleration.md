@@ -23,12 +23,14 @@ Each hardware acceleration type, as well as each Jellyfin installation type, req
 Configuring VAAPI on Debian/Ubuntu requires some additional configuration to ensure permissions are correct.
 
 1. Configure VAAPI for your system by following the [relevant documentation](https://wiki.archlinux.org/index.php/Hardware_video_acceleration). Verify that a `render` device is now present in `/dev/dri`, and note the permissions and group available to write to it, in this case `render`:  
-    `$ ls -l /dev/dri`  
-    `total 0`  
-    `drwxr-xr-x 2 root root        100 Apr 13 16:37 by-path`  
-    `crw-rw---- 1 root video  226,   0 Apr 13 16:37 card0`  
-    `crw-rw---- 1 root video  226,   1 Apr 13 16:37 card1`  
-    `crw-rw---- 1 root render 226, 128 Apr 13 16:37 renderD128`  
+    ```
+    $ ls -l /dev/dri
+    total 0
+    drwxr-xr-x 2 root root        100 Apr 13 16:37 by-path
+    crw-rw---- 1 root video  226,   0 Apr 13 16:37 card0
+    crw-rw---- 1 root video  226,   1 Apr 13 16:37 card1
+    crw-rw---- 1 root render 226, 128 Apr 13 16:37 renderD128
+    ```
 
     **NOTE:** On some releases, the group may be `video` instead of `render`.
 
@@ -45,14 +47,18 @@ Configuring VAAPI on Debian/Ubuntu requires some additional configuration to ens
 Follow the steps above to add the jellyfin user to the `video` or `render` group, depending on your circumstances.
 
 1. Add your GPU to the container:
-    `$ lxc config device add <container name> gpu gpu gid=<gid of your video or render group>`
+    ```
+    $ lxc config device add <container name> gpu gpu gid=<gid of your video or render group>
+    ```
 
 2. Make sure you have the card within the container:
-    `$ lxc exec jellyfin -- ls -l /dev/dri`
-    `total 0`
-    `crw-rw---- 1 root video 226,   0 Jun  4 02:13 card0`
-    `crw-rw---- 1 root video 226,   0 Jun  4 02:13 controlD64`
-    `crw-rw---- 1 root video 226, 128 Jun  4 02:13 renderD128`
+    ```
+    $ lxc exec jellyfin -- ls -l /dev/dri
+    total 0
+    crw-rw---- 1 root video 226,   0 Jun  4 02:13 card0
+    crw-rw---- 1 root video 226,   0 Jun  4 02:13 controlD64
+    crw-rw---- 1 root video 226, 128 Jun  4 02:13 renderD128
+    ```
 
 3. Configure Jellyfin to use video acceleration, point it at the right device if the default option doesn't
 
